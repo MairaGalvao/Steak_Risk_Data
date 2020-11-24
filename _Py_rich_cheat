@@ -1,0 +1,61 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+# Question number 1 = Do rich people cheat more?
+
+
+INCOME_FIELD = 'Household Income'               # constant var
+INCOME_CATEGORY_FIELD = 'Income Category'       # constant var
+CHEAT_ANSWERS = 'Have you ever cheated on your significant other?'
+
+
+def add_income_col_with_q_category(data):
+    data.loc[data[INCOME_FIELD] == "$0 - $24,999", INCOME_CATEGORY_FIELD] = 'G1'
+    data.loc[data[INCOME_FIELD] == "$25,000 - $49,999", INCOME_CATEGORY_FIELD] = 'G1'
+    data.loc[data[INCOME_FIELD] == "$50,000 - $99,999", INCOME_CATEGORY_FIELD] = 'G2'
+    data.loc[data[INCOME_FIELD] == "$100,000 - $149,999", INCOME_CATEGORY_FIELD] = 'G3'
+    data.loc[data[INCOME_FIELD] == "$150,000+", INCOME_CATEGORY_FIELD] = 'G4'
+    return data
+
+
+def get_amount_of_people_in_given_group(data, group):
+    amount = data.loc[data[INCOME_CATEGORY_FIELD] == group, [INCOME_CATEGORY_FIELD]]
+    print("amount of ppl in group ", group, " = ", len(amount))
+    return len(amount)
+
+
+def amount_of_people_that_cheat(data, group):
+    cheaters = data[(data[INCOME_CATEGORY_FIELD] == group) & (data[CHEAT_ANSWERS] == "Yes")]
+    print("amount of ppl that cheat ", group, " = ", len(cheaters))
+    return len(cheaters)
+
+
+def calculate_percentage(total, fraction):
+    return fraction / total * 100
+
+
+def getting_results_percentage_cheaters(original_data, group):
+    updated_data = add_income_col_with_q_category(original_data)
+    total = get_amount_of_people_in_given_group(updated_data, group)
+    fraction = amount_of_people_that_cheat(updated_data, group)
+    return calculate_percentage(total, fraction)
+
+
+def plot_cheaters(cheaters_1, cheaters_2,cheaters_3,cheaters_4):
+    fig = plt.figure(figsize = (10, 5))
+    groups = ['G1', 'G2', 'G3', 'G4']
+    plt.xlabel("Income categories")
+    plt.ylabel("% of cheaters")
+    plt.title('Percent of cheaters by group')
+    cheaters = [cheaters_1,cheaters_2,cheaters_3,cheaters_4]
+    plt.bar(groups, cheaters,color ='maroon', width = 0.4)
+    plt.show()
+
+def main_cheaters():
+    steak_data = pd.read_csv("steak-risk-survey.csv")
+    cheaters_1 = getting_results_percentage_cheaters(steak_data, "G1")
+    cheaters_2 = getting_results_percentage_cheaters(steak_data, "G2")
+    cheaters_3 = getting_results_percentage_cheaters(steak_data, "G3")
+    cheaters_4 = getting_results_percentage_cheaters(steak_data, "G4")
+    plot_cheaters(cheaters_1, cheaters_2, cheaters_3, cheaters_4)
+
+main_cheaters()
