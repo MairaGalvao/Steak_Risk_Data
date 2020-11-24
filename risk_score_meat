@@ -1,0 +1,81 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+#do risk taker people eat more rare steak?
+
+pd.set_option('display.max_rows', None)
+steak_data = pd.read_csv("steak-risk-survey.csv")
+
+LOTTERY_Q = 'Risk lottery (A) or safe lottery (B)'
+SMOKE_Q = 'Do you ever smoke cigarettes?'
+DRINK_Q = 'Do you ever drink alcohol?'
+GAMBLE_Q = 'Do you ever gamble?'
+SKYDIVING_Q = 'Have you ever been skydiving?'
+DRIVE_Q = 'Have you ever drove above limit?'
+CHEAT_Q = 'Have you ever cheated?'
+LOT_A = "Lottery A"
+LOT_B = "Lottery B"
+STEAK_Q = 'Steak level?'
+RISK_SCORE = 'Score Risk Taker'
+
+def changing_names_columns(steak_data):
+    updated_data = steak_data.rename(columns={'Consider the following hypothetical situations: <br>In Lottery A, you have a '
+                                          '50% chance of success, with a payout of $100. <br>In Lottery B, you have a 90% '
+                                          'chance of success, with a payout of $20. <br><br>Assuming you have $10 to bet, '
+                                          'would you play Lottery A or Lottery B?': LOTTERY_Q,
+                                          'Do you ever drive above the speed limit?':DRIVE_Q,
+                                          'Have you ever cheated on your significant other?': CHEAT_Q,
+                                          'How do you like your steak prepared?': STEAK_Q})
+    return updated_data
+
+def replace_score_values_columns(data):
+    data.loc[data[LOTTERY_Q] == LOT_A, LOTTERY_Q] = 5
+    data.loc[data[LOTTERY_Q] == LOT_B, LOTTERY_Q] = 0
+    data.loc[data[SMOKE_Q] == "Yes", SMOKE_Q] = 1
+    data.loc[data[SMOKE_Q] == "No", SMOKE_Q] = 0
+    data.loc[data[DRINK_Q] == "Yes", DRINK_Q] = 1
+    data.loc[data[DRINK_Q] == "No", DRINK_Q] = 0
+    data.loc[data[GAMBLE_Q] == "Yes", GAMBLE_Q] = 3
+    data.loc[data[GAMBLE_Q] == "No", GAMBLE_Q] = 0
+    data.loc[data[SKYDIVING_Q] == "Yes", SKYDIVING_Q] = 4
+    data.loc[data[SKYDIVING_Q] == "No", SKYDIVING_Q] = 0
+    data.loc[data[DRIVE_Q] == "Yes", DRIVE_Q] = 3
+    data.loc[data[DRIVE_Q] == "No", DRIVE_Q] = 0
+    data.loc[data[CHEAT_Q] == "Yes", CHEAT_Q] = 2
+    data.loc[data[CHEAT_Q] == "No", CHEAT_Q] = 0
+    return data
+
+
+def sum_score_risk(data):
+    data[RISK_SCORE] = data[LOTTERY_Q] + data[SMOKE_Q] + data[DRINK_Q] + data[GAMBLE_Q] + data[SKYDIVING_Q] + data[DRIVE_Q] + data[CHEAT_Q]
+    return data
+
+
+def remove_nan_rows(column_name, data):
+    not_nan_data = data[data[column_name].notna()]
+    print(not_nan_data)
+    return not_nan_data
+
+
+def plot_risk_takers_with_type_steak(data):
+    plt.figure(figsize=(10, 5))
+    meat_level = ["Rare", "Medium rare", "Medium", "Medium well", "Well done"]
+    plt.xlabel("Type of meat")
+    plt.ylabel("Risk level")
+    plt.title('Risk takers type of meat')
+    risk_level = data[RISK_SCORE]
+    plt.bar(meat_level, risk_level, color='maroon', width=0.4)
+    plt.show()
+
+def risk_versus_steak_type():
+    steak_data = pd.read_csv("steak-risk-survey.csv")
+    updated_steak_data = changing_names_columns(steak_data)
+    updated_data_with_score = replace_score_values_columns(updated_steak_data)
+    updated_data_with_score_column = sum_score_risk(updated_data_with_score)
+    plot_risk_takers_with_type_steak(updated_data_with_score_column)
+
+
+
+risk_versus_steak_type()
