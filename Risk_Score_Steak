@@ -1,6 +1,6 @@
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 #do risk taker people eat more rare steak?
@@ -30,52 +30,57 @@ def changing_names_columns(steak_data):
                                           'How do you like your steak prepared?': STEAK_Q})
     return updated_data
 
-def replace_score_values_columns(data):
-    data.loc[data[LOTTERY_Q] == LOT_A, LOTTERY_Q] = 5
-    data.loc[data[LOTTERY_Q] == LOT_B, LOTTERY_Q] = 0
-    data.loc[data[SMOKE_Q] == "Yes", SMOKE_Q] = 1
-    data.loc[data[SMOKE_Q] == "No", SMOKE_Q] = 0
-    data.loc[data[DRINK_Q] == "Yes", DRINK_Q] = 1
-    data.loc[data[DRINK_Q] == "No", DRINK_Q] = 0
-    data.loc[data[GAMBLE_Q] == "Yes", GAMBLE_Q] = 3
-    data.loc[data[GAMBLE_Q] == "No", GAMBLE_Q] = 0
-    data.loc[data[SKYDIVING_Q] == "Yes", SKYDIVING_Q] = 4
-    data.loc[data[SKYDIVING_Q] == "No", SKYDIVING_Q] = 0
-    data.loc[data[DRIVE_Q] == "Yes", DRIVE_Q] = 3
-    data.loc[data[DRIVE_Q] == "No", DRIVE_Q] = 0
-    data.loc[data[CHEAT_Q] == "Yes", CHEAT_Q] = 2
-    data.loc[data[CHEAT_Q] == "No", CHEAT_Q] = 0
-    return data
+def replace_score_values_columns(updated_data):
+    updated_data.loc[updated_data[LOTTERY_Q] == LOT_A, LOTTERY_Q] = 5
+    updated_data.loc[updated_data[LOTTERY_Q] == LOT_B, LOTTERY_Q] = 0
+    updated_data.loc[updated_data[SMOKE_Q] == "Yes", SMOKE_Q] = 1
+    updated_data.loc[updated_data[SMOKE_Q] == "No", SMOKE_Q] = 0
+    updated_data.loc[updated_data[DRINK_Q] == "Yes", DRINK_Q] = 1
+    updated_data.loc[updated_data[DRINK_Q] == "No", DRINK_Q] = 0
+    updated_data.loc[updated_data[GAMBLE_Q] == "Yes", GAMBLE_Q] = 3
+    updated_data.loc[updated_data[GAMBLE_Q] == "No", GAMBLE_Q] = 0
+    updated_data.loc[updated_data[SKYDIVING_Q] == "Yes", SKYDIVING_Q] = 4
+    updated_data.loc[updated_data[SKYDIVING_Q] == "No", SKYDIVING_Q] = 0
+    updated_data.loc[updated_data[DRIVE_Q] == "Yes", DRIVE_Q] = 3
+    updated_data.loc[updated_data[DRIVE_Q] == "No", DRIVE_Q] = 0
+    updated_data.loc[updated_data[CHEAT_Q] == "Yes", CHEAT_Q] = 3
+    updated_data.loc[updated_data[CHEAT_Q] == "No", CHEAT_Q] = 0
+    return updated_data
 
 
-def sum_score_risk(data):
-    data[RISK_SCORE] = data[LOTTERY_Q] + data[SMOKE_Q] + data[DRINK_Q] + data[GAMBLE_Q] + data[SKYDIVING_Q] + data[DRIVE_Q] + data[CHEAT_Q]
-    return data
+def sum_score_risk(updated_data):
+    updated_data[RISK_SCORE] = updated_data[LOTTERY_Q] + updated_data[SMOKE_Q] + updated_data[DRINK_Q]\
+                               + updated_data[GAMBLE_Q] + updated_data[SKYDIVING_Q] + updated_data[DRIVE_Q] + updated_data[CHEAT_Q]
+    return updated_data
 
 
-def remove_nan_rows(column_name, data):
-    not_nan_data = data[data[column_name].notna()]
-    print(not_nan_data)
-    return not_nan_data
 
+def remove_nan_rows(updated_data):
+    # filter out NaN
+    no_nan = updated_data[~updated_data['Score Risk Taker'].isnull()]
+    # filter out strings
+    no_string = no_nan[~pd.to_numeric(no_nan['Score Risk Taker'], errors='coerce').isnull()]
+    #filter out NaN in Steak Question Column
+    clean_steak_col = (no_string[~no_string[STEAK_Q].isnull()])
+    return clean_steak_col
 
-def plot_risk_takers_with_type_steak(data):
-    plt.figure(figsize=(10, 5))
-    meat_level = ["Rare", "Medium rare", "Medium", "Medium well", "Well done"]
-    plt.xlabel("Type of meat")
-    plt.ylabel("Risk level")
-    plt.title('Risk takers type of meat')
-    risk_level = data[RISK_SCORE]
-    plt.bar(meat_level, risk_level, color='maroon', width=0.4)
+def plot_risk_takers_with_type_steak(updated_data):
+    order = ["Rare", "Medium rare", "Medium", "Medium Well", "Well"]
+    updated_data[STEAK_Q] = pd.Categorical(updated_data[STEAK_Q], order)
+    updated_data.sort_values(by=[STEAK_Q], inplace=True)
+    print(updated_data[STEAK_Q])
+    sns.scatterplot(data=updated_data, x=STEAK_Q, y=RISK_SCORE)
     plt.show()
 
-def risk_versus_steak_type():
+
+def main_risk_versus_steak_type():
     steak_data = pd.read_csv("steak-risk-survey.csv")
     updated_steak_data = changing_names_columns(steak_data)
     updated_data_with_score = replace_score_values_columns(updated_steak_data)
     updated_data_with_score_column = sum_score_risk(updated_data_with_score)
-    plot_risk_takers_with_type_steak(updated_data_with_score_column)
+    updated_data_without_nan = remove_nan_rows(updated_data_with_score_column)
+    plot_risk_takers_with_type_steak(updated_data_without_nan)
 
 
+main_risk_versus_steak_type()
 
-risk_versus_steak_type()
