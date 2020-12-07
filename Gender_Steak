@@ -3,25 +3,17 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-
+#do risk taker people eat more rare steak?
 #Which type of meat each gender prefer?
 #print(steak_data['Gender'].value_counts()) - 0(female) - 268 | 1(male) - 246
 #print(steak_data.groupby(GENDER_Q)[STEAK_Q].value_counts())
-
 
 pd.set_option('display.max_rows', None, 'display.max_columns', None)
 STEAK_Q = 'How do you like your steak prepared?'
 GENDER_Q = 'Gender'
 
-
-#def para calcular cada gender
-
-
-
 def calculate_percentage_gender_steak(total, fraction):
     return fraction / total * 100
-
-
 
 def getting_groupby_steak_gender(data, group):
     data_with_count = data.groupby(GENDER_Q)[STEAK_Q].value_counts()
@@ -29,23 +21,18 @@ def getting_groupby_steak_gender(data, group):
     return len(data_with_count)
 
 def getting_results_percentage_steak_gender(original_data, group):
-    updated_data = giving_numerical_values_gender(original_data)
-    total = getting_groupby_steak_gender(updated_data, group)
-    fraction = getting_amount_gender(updated_data, group)
+    total = getting_groupby_steak_gender(original_data, group)
+    fraction = getting_groupby_steak_gender(original_data, group)
     return calculate_percentage_gender_steak(fraction, total)
 
-
-
-
-
-def remove_nan_rows(column_name, data):
-    not_nan_data = data[data[column_name].notna()]
-    print(not_nan_data)
-    return not_nan_data
+def remove_nan_rows(data):
+    no_nan = data[~data['Gender'].isnull()]
+    no_string = no_nan[~pd.to_numeric(no_nan['Gender'], errors='coerce').isnull()]
+    clean_steak_col = (no_string[~no_string[STEAK_Q].isnull()])
+    return clean_steak_col
 
 def plot_steak_by_gender(data):
-    fig = plt.figure(figsize = (10, 5))
-    gender = data.loc[data[GENDER_Q]]
+    gender = data[GENDER_Q]
     plt.xlabel("Income categories")
     plt.ylabel("% of cheaters")
     plt.title('Percent of cheaters by group')
@@ -53,18 +40,13 @@ def plot_steak_by_gender(data):
     plt.bar(gender, meat_group,color ='maroon', width = 0.4)
     plt.show()
 
-
 def main_getting_functions_gender_steak():
     steak_data = pd.read_csv("steak-risk-survey.csv")
-    remove_nan_rows(steak_data)
-    updated_data = giving_numerical_values_gender(steak_data)
-    type_steak_gender(updated_data)
+    data_without_nan = remove_nan_rows(steak_data)
+    data_with_group_by = getting_groupby_steak_gender(data_without_nan)
+    updated_data = getting_results_percentage_steak_gender(data_with_group_by)
+    remove_nan_rows(updated_data)
     plot_steak_by_gender(updated_data)
 
+main_getting_functions_gender_steak()
 
-
-#main_getting_functions_gender_steak()
-steak_data = pd.read_csv("steak-risk-survey.csv")
-test = steak_data.groupby(GENDER_Q)[STEAK_Q].value_counts()
-plt.bar(test,color ='maroon', width = 0.4, height=5)
-plt.show()
