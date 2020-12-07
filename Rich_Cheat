@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
 # Question number 1 = Do rich people cheat more?
 
 
@@ -9,11 +10,11 @@ CHEAT_ANSWERS = 'Have you ever cheated on your significant other?'
 
 
 def add_income_col_with_q_category(data):
-    data.loc[data[INCOME_FIELD] == "$0 - $24,999", INCOME_CATEGORY_FIELD] = 'G1'
-    data.loc[data[INCOME_FIELD] == "$25,000 - $49,999", INCOME_CATEGORY_FIELD] = 'G1'
-    data.loc[data[INCOME_FIELD] == "$50,000 - $99,999", INCOME_CATEGORY_FIELD] = 'G2'
-    data.loc[data[INCOME_FIELD] == "$100,000 - $149,999", INCOME_CATEGORY_FIELD] = 'G3'
-    data.loc[data[INCOME_FIELD] == "$150,000+", INCOME_CATEGORY_FIELD] = 'G4'
+    data.loc[data[INCOME_FIELD] == "$0 - $24,999", INCOME_CATEGORY_FIELD] = "$0 - $49,999"
+    data.loc[data[INCOME_FIELD] == "$25,000 - $49,999", INCOME_CATEGORY_FIELD] = "$0 - $49,999"
+    data.loc[data[INCOME_FIELD] == "$50,000 - $99,999", INCOME_CATEGORY_FIELD] = "$50,000 - $99,999"
+    data.loc[data[INCOME_FIELD] == "$100,000 - $149,999", INCOME_CATEGORY_FIELD] = "$100,000 - $149,999"
+    data.loc[data[INCOME_FIELD] == "$150,000+", INCOME_CATEGORY_FIELD] = "$150,000+"
     return data
 
 
@@ -41,21 +42,34 @@ def getting_results_percentage_cheaters(original_data, group):
 
 
 def plot_cheaters(cheaters_1, cheaters_2,cheaters_3,cheaters_4):
-    fig = plt.figure(figsize = (10, 5))
-    groups = ['G1', 'G2', 'G3', 'G4']
+    plt.figure(figsize = (10, 5))
+    groups = ["$0-49,999", "$50,000-99,999", "$100,000-149,999", "$150,000+"]
     plt.xlabel("Income categories")
     plt.ylabel("% of cheaters")
     plt.title('Percent of cheaters by group')
     cheaters = [cheaters_1,cheaters_2,cheaters_3,cheaters_4]
-    plt.bar(groups, cheaters,color ='maroon', width = 0.4)
+    steak_plot = sns.barplot(groups, cheaters)
+    for p in steak_plot.patches:
+        steak_plot.annotate(format(p.get_height(), '.2f'),
+                       (p.get_x() + p.get_width() / 2., p.get_height()),
+                       ha='center', va='center',
+                       xytext=(0, 9),
+                       textcoords='offset points')
+    for bar in steak_plot.patches:
+        if bar.get_height() < 22:
+            bar.set_color('grey')
+        else:
+            bar.set_color('darkred')
     plt.show()
+
 
 def main_cheaters():
     steak_data = pd.read_csv("steak-risk-survey.csv")
-    cheaters_1 = getting_results_percentage_cheaters(steak_data, "G1")
-    cheaters_2 = getting_results_percentage_cheaters(steak_data, "G2")
-    cheaters_3 = getting_results_percentage_cheaters(steak_data, "G3")
-    cheaters_4 = getting_results_percentage_cheaters(steak_data, "G4")
+    cheaters_1 = getting_results_percentage_cheaters(steak_data, "$0 - $49,999")
+    cheaters_2 = getting_results_percentage_cheaters(steak_data, "$50,000 - $99,999")
+    cheaters_3 = getting_results_percentage_cheaters(steak_data, "$100,000 - $149,999")
+    cheaters_4 = getting_results_percentage_cheaters(steak_data, "$150,000+")
     plot_cheaters(cheaters_1, cheaters_2, cheaters_3, cheaters_4)
+
 
 main_cheaters()
