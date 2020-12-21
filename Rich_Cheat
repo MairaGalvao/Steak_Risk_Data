@@ -1,7 +1,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-# Question number 1 = Do rich people cheat more?
+
+# Question number 1 = #Do the richer people cheat more?
 
 
 INCOME_FIELD = 'Household Income'               # constant var
@@ -73,3 +74,4 @@ def main_cheaters():
 
 
 main_cheaters()
+
