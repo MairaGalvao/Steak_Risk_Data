@@ -51,7 +51,7 @@ def plot_cheaters(cheaters_1, cheaters_2,cheaters_3,cheaters_4):
     cheaters = [cheaters_1,cheaters_2,cheaters_3,cheaters_4]
     steak_plot = sns.barplot(groups, cheaters)
     for p in steak_plot.patches:
-        steak_plot.annotate(format(p.get_height(), '.2f'),
+        steak_plot.annotate(format(p.get_height(), '.2f' + '%'),
                        (p.get_x() + p.get_width() / 2., p.get_height()),
                        ha='center', va='center',
                        xytext=(0, 9),
