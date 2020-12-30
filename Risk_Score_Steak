@@ -61,10 +61,17 @@ def remove_nan_rows(updated_data):
     return clean_steak_col
 
 def plot_risk_takers_with_type_steak(updated_data):
-    sns.countplot(x = STEAK_Q, hue= RISK_SCORE, data=updated_data, order = ["Rare", "Medium rare", "Medium", "Medium Well", "Well"])
-    plt.title('Do risk takers eat rarer steaks?', fontsize=18)
+    risk_steak_plot = sns.countplot(x = STEAK_Q, hue= RISK_SCORE, data=updated_data,
+                                    order = ["Rare", "Medium rare", "Medium", "Medium Well", "Well"])
+    for p in risk_steak_plot.patches:
+        risk_steak_plot.annotate(format(p.get_height(),'.0f'),
+                       (p.get_x() + p.get_width() / 2., p.get_height()),
+                       ha='center', va='center',
+                       xytext=(0, 9),
+                       textcoords='offset points', color='blue')
+    plt.title('Risk takers preferences towards steak', fontsize=18)
     plt.xlabel('Steak level', fontsize=14)
-    plt.ylabel('Risk taking score', fontsize=14)
+    plt.ylabel('Amount of people', fontsize=14)
     plt.show()
 
 
@@ -77,5 +84,4 @@ def main_risk_versus_steak_type():
     plot_risk_takers_with_type_steak(updated_data_without_nan)
 
 main_risk_versus_steak_type()
-
 
