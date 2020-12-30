@@ -9,13 +9,13 @@ STEAK_Q = 'How do you like your steak prepared?'
 GENDER_Q = 'Gender'
 
 
-def get_meat_level_by_gender(data):
+def get_meat_level_by_gender_plot(data):
     gender_steak_plot = sns.countplot(x=STEAK_Q, hue=GENDER_Q, data=data, order = ["Rare", "Medium rare", "Medium", "Medium Well", "Well"])
-    plt.title('Meat preference by gender', fontsize=18)
+    plt.title('Gender preferences towards steak', fontsize=18)
     plt.xlabel('Steak level', fontsize=14)
     plt.ylabel('Gender', fontsize=14)
     for p in gender_steak_plot.patches:
-        gender_steak_plot.annotate(format(p.get_height(),'.2f'),
+        gender_steak_plot.annotate(format(p.get_height(),'.0f'),
                        (p.get_x() + p.get_width() / 2., p.get_height()),
                        ha='center', va='center',
                        xytext=(0, 9),
@@ -25,11 +25,10 @@ def get_meat_level_by_gender(data):
 def main_getting_functions_gender_steak():
     steak_data = pd.read_csv("steak-risk-survey.csv")
     steak_data.drop([0], inplace = True)
-    meat_level = get_meat_level_by_gender(steak_data)
-    get_meat_level_by_gender(meat_level)
+    meat_level = get_meat_level_by_gender_plot(steak_data)
+    get_meat_level_by_gender_plot(meat_level)
 
 
 main_getting_functions_gender_steak()
-
 
 
