@@ -45,13 +45,13 @@ def getting_results_percentage_cheaters(original_data, group):
 def plot_cheaters(cheaters_1, cheaters_2,cheaters_3,cheaters_4):
     plt.figure(figsize = (10, 5))
     groups = ["$0-49,999", "$50,000-99,999", "$100,000-149,999", "$150,000+"]
-    plt.xlabel("Income categories")
-    plt.ylabel("% of cheaters")
-    plt.title('Percent of cheaters by group')
+    plt.xlabel("Income categories", fontsize=14)
+    plt.ylabel("% of cheaters", fontsize=14)
+    plt.title('Percent of cheaters by income group', fontsize=18)
     cheaters = [cheaters_1,cheaters_2,cheaters_3,cheaters_4]
     steak_plot = sns.barplot(groups, cheaters)
     for p in steak_plot.patches:
-        steak_plot.annotate(format(p.get_height(), '.2f' + '%'),
+        steak_plot.annotate(format(p.get_height(),'.2f') + '%',
                        (p.get_x() + p.get_width() / 2., p.get_height()),
                        ha='center', va='center',
                        xytext=(0, 9),
@@ -61,6 +61,7 @@ def plot_cheaters(cheaters_1, cheaters_2,cheaters_3,cheaters_4):
             bar.set_color('grey')
         else:
             bar.set_color('darkred')
+
     plt.show()
 
 
@@ -72,6 +73,4 @@ def main_cheaters():
     cheaters_4 = getting_results_percentage_cheaters(steak_data, "$150,000+")
     plot_cheaters(cheaters_1, cheaters_2, cheaters_3, cheaters_4)
 
-
 main_cheaters()
-
