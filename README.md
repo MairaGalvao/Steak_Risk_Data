@@ -1,6 +1,6 @@
 # Steak_Risk_Data
 
 
-**ON PROGRESS**
+**Steak Risk Data**
 
-add whole article, or something, + the images
+You can see the source code on my GitHub profile as well as read the article on my Medium profile.
