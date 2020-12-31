@@ -3,4 +3,6 @@
 
 **Steak Risk Data**
 
-You can see the source code on my GitHub profile as well as read the article on my Medium profile.
+An extended version of the article can be found below on my profile on Medium.
+
+
