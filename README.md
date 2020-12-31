@@ -12,7 +12,9 @@ I am a big fan of meat myself, and as a good Brazilian, I enjoy a fine cut. In a
 As soon as I began to understand the data better, I started to define my hypothesis and then few questions arose:
 
 Question 1º: Do risk takers eat rarer steaks?
+
 Question 2º: How do men and women like their meat doneness?
+
 Question 3º: Do the richer people cheat more on their partners?
 
 
